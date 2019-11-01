@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhijia.src.sms.mapper.ApiSmsMapper" >
+  <resultMap id="BaseResultMap" type="com.zhijia.src.sms.entity.ApiSms" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sendFrom" property="sendFrom" jdbcType="VARCHAR" />
+    <result column="sendTo" property="sendTo" jdbcType="VARCHAR" />
+    <result column="sendTime" property="sendTime" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="statusCode" property="statusCode" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, sendFrom, sendTo, sendTime, content, statusCode, result
+  </sql>
+ 
+  <select id="selectAllSms" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from api_sms
+  </select>
+  
+  <select id="selectSmsAccessRecordByTerm" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+    from api_sms
+    <where>
+	    <if test="sendTo != '' and sendTo != null and sendTo != 'null' ">
+	    	sendTo = #{sendTo, jdbcType=VARCHAR}
+	    </if>
+	    <if test="statusCode != '' and statusCode != null and statusCode != 'null' ">
+	    	and statusCode = #{statusCode, jdbcType=VARCHAR}
+	    </if>
+	    <if test="sendTimeFrom != '' and sendTimeFrom != null and sendTimeFrom != 'null' ">
+	    	and sendTime &gt;= #{sendTimeFrom, jdbcType=VARCHAR}
+	    </if>
+	    <if test="sendTimeTo != '' and sendTimeTo != null and sendTimeTo != 'null' ">
+	    	and sendTime &lt;= #{sendTimeTo, jdbcType=VARCHAR}
+	    </if>
+    </where>
+  </select>
+  
+  <insert id="insertApiSms" parameterType="com.zhijia.src.sms.entity.ApiSms" >
+    insert into api_sms (sendFrom, sendTo, sendTime, content, statusCode, result)
+    values (#{sendFrom,jdbcType=VARCHAR}, #{sendTo,jdbcType=VARCHAR}, #{sendTime,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{statusCode,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR})
+  </insert>
+</mapper>
